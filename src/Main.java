@@ -7,7 +7,7 @@ public class Main {
 		
 		System.out.println( "Hello  2" );
 		
-		new MainGUI();
+		new MainEulerGUI();
 		
 	}
 

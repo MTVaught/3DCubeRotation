@@ -14,7 +14,7 @@ import javax.swing.JPanel;
 
 import Graphics.Rectangle;
 
-public class MainGUI extends JFrame implements KeyListener {
+public class MainEulerGUI extends JFrame implements KeyListener {
 	double[][][] line = new double[12][2][3];
 	double[][][] toRender = new double[12][2][3];
 	ArrayList<Rectangle> rects = new ArrayList<Rectangle>();
@@ -26,7 +26,7 @@ public class MainGUI extends JFrame implements KeyListener {
 
 	double alpha=0, beta=0, gamma=0;
 
-	public MainGUI (){
+	public MainEulerGUI (){
 		super("TEST RENDER");
 		double[] a = {-10,-10,-10};
 		double[] b = {-10,10,-10};
