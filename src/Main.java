@@ -9,7 +9,10 @@ public class Main {
 
 		// new MainEulerGUI();
 
-		new MainGUI();
+		MainGUI withScale = new MainGUI( true );
+		withScale.setTitle( withScale.getTitle() + " (Perspective)" );
+		MainGUI withoutScale = new MainGUI( false );
+		withoutScale.setTitle( withoutScale.getTitle() + " (No Perpective)" );
 
 	}
 

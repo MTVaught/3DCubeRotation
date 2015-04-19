@@ -3,20 +3,22 @@ package Graphics;
 import java.awt.Color;
 import java.util.Arrays;
 
+import Math.Coordinate3D;
+
 public class Triangle implements Comparable<Triangle>{
 
-	Coordinate[] points;
+	Coordinate3D[] points;
 	Color color;
 
-	public Triangle( Coordinate pos0, Coordinate pos1, Coordinate pos2, Color color) {
-		this.points = new Coordinate[3];
+	public Triangle( Coordinate3D pos0, Coordinate3D pos1, Coordinate3D pos2, Color color) {
+		this.points = new Coordinate3D[3];
 		points[0] = pos0;
 		points[1] = pos1;
 		points[2] = pos2;
 		this.color = color;
 	}
 
-	public Coordinate[] getPoints() {
+	public Coordinate3D[] getPoints() {
 		return Arrays.copyOf(points, points.length);
 	}
 
