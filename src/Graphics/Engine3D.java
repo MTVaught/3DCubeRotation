@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 import javax.swing.JPanel;
 
-public class Quaternion extends JPanel {
+public class Engine3D extends JPanel {
 
 	/**
 	 *
@@ -21,7 +21,7 @@ public class Quaternion extends JPanel {
 	private double	offset	= 0, scale = 0, distance = 0;
 	private ArrayList<Triangle>	tri, rect, poly;
 
-	public Quaternion( double width, double height, double depth ) {
+	public Engine3D( double width, double height, double depth ) {
 		super();
 		tri = new ArrayList<Triangle>();
 		rect = new ArrayList<Triangle>();
