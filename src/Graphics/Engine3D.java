@@ -21,11 +21,16 @@ public class Engine3D extends JPanel {
 		LINE, TRIANGLE, RECTANGLE, POLYGON, ALL, N_BIN
 	}
 
-	private double	offset	= 0, scale = 0, distance = 0;
-	private ArrayList<Triangle>	tri, rect, poly;
+	private double				offset		= 0;
+	private double				scale		= 0;
+	private double				distance	= 0;
+	private ArrayList<Triangle>	tri;
+	private ArrayList<Triangle>	rect;
+	private ArrayList<Triangle>	poly;
 	private Color				addColor;
-	private boolean				triDirty	= false, rectDirty = false,
-			polyDirty = false;
+	private boolean				triDirty	= false;
+	private boolean				rectDirty	= false;
+	private boolean				polyDirty	= false;
 
 	public Engine3D( int width, int height, int depth ) {
 		super();
