@@ -13,6 +13,7 @@ public class Triangle implements Comparable<Triangle>{
 		points[0] = pos0;
 		points[1] = pos1;
 		points[2] = pos2;
+		this.color = color;
 	}
 
 	public Coordinate[] getPoints() {
@@ -31,7 +32,7 @@ public class Triangle implements Comparable<Triangle>{
 	public int compareTo(Triangle o) {
 		Double a = this.getDepth();
 		Double b = o.getDepth();
-		return a.compareTo(b);
+		return b.compareTo( a );
 	}
 
 }

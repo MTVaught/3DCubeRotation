@@ -1,9 +1,12 @@
 package Graphics;
 
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import javax.swing.JPanel;
 
@@ -20,16 +23,23 @@ public class Engine3D extends JPanel {
 
 	private double	offset	= 0, scale = 0, distance = 0;
 	private ArrayList<Triangle>	tri, rect, poly;
+	private Color				addColor;
+	private boolean				triDirty	= false, rectDirty = false,
+			polyDirty = false;
 
-	public Engine3D( double width, double height, double depth ) {
+	public Engine3D( int width, int height, int depth ) {
 		super();
 		tri = new ArrayList<Triangle>();
 		rect = new ArrayList<Triangle>();
 		poly = new ArrayList<Triangle>();
 
 		distance = depth / 2.0;
-		scale = 100;
+		scale = 500;
 		offset = 300;
+
+		this.setPreferredSize( new Dimension( width, height ) );
+
+		addColor = Color.GRAY;
 	}
 
 	public boolean addLine( Coordinate pos0, Coordinate pos1 ) {
@@ -38,7 +48,9 @@ public class Engine3D extends JPanel {
 
 	public boolean addTriangle( Coordinate pos0, Coordinate pos1,
 			Coordinate pos2 ) {
-		return false;
+		tri.add( new Triangle( pos0, pos1, pos2, addColor ) );
+		triDirty = true;
+		return true;
 	}
 
 	public boolean addRect( Coordinate pos0, Coordinate pos1, Coordinate pos2,
@@ -48,6 +60,10 @@ public class Engine3D extends JPanel {
 
 	public boolean addPolygon( Coordinate[] pos ) {
 		return false;
+	}
+
+	public void setColor( Color color ) {
+		addColor = color;
 	}
 
 	public boolean clear() {
@@ -79,8 +95,8 @@ public class Engine3D extends JPanel {
 		//do stuff for triangles
 
 		drawTriBin( g, Bin.TRIANGLE );
-		drawTriBin( g, Bin.RECTANGLE );
-		drawTriBin( g, Bin.POLYGON );
+		// drawTriBin( g, Bin.RECTANGLE );
+		// drawTriBin( g, Bin.POLYGON );
 
 		// for(int i = 0; i < line.length; i++){
 		// int[] pt1 = new int[2];
@@ -106,12 +122,18 @@ public class Engine3D extends JPanel {
 		ArrayList<Triangle> geometry;
 		switch ( bin ) {
 		case TRIANGLE:
+			if (triDirty)
+				Collections.sort( tri );
 			geometry = tri;
 			break;
 		case RECTANGLE:
+			if (rectDirty)
+				Collections.sort( rect );
 			geometry = rect;
 			break;
 		case POLYGON:
+			if (polyDirty)
+				Collections.sort( poly );
 			geometry = poly;
 			break;
 		default:
@@ -128,7 +150,7 @@ public class Engine3D extends JPanel {
 			pt2 = worldToScreen( coords[2] );
 			int[] x = { pt0[0], pt1[0], pt2[0] };
 			int[] y = { pt0[1], pt1[1], pt2[1] };
-			g.setColor( rect.get( i ).getColor() );
+			g.setColor( geometry.get( i ).getColor() );
 			g.fillPolygon( x, y, 3 );
 		}
 		return true;
