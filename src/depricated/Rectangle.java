@@ -1,4 +1,4 @@
-package Graphics;
+package depricated;
 
 import java.awt.Color;
 import java.util.Arrays;

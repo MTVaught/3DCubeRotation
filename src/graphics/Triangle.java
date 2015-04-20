@@ -1,9 +1,9 @@
-package Graphics;
+package graphics;
 
 import java.awt.Color;
 import java.util.Arrays;
 
-import Math.Coordinate3D;
+import math.Coordinate3D;
 
 public class Triangle implements Comparable<Triangle>{
 

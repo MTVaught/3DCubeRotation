@@ -1,3 +1,4 @@
+package depricated;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -11,8 +12,6 @@ import java.util.Collections;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-
-import Graphics.Rectangle;
 
 public class MainEulerGUI extends JFrame implements KeyListener {
 	double[][][] line = new double[12][2][3];

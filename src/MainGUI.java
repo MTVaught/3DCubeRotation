@@ -1,11 +1,12 @@
+import graphics.Engine3D;
+
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 import javax.swing.JFrame;
 
-import Graphics.Engine3D;
-import Math.Coordinate3D;
+import math.Coordinate3D;
 
 public class MainGUI extends JFrame implements KeyListener {
 	/**

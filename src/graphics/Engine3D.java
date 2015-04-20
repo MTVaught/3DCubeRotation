@@ -1,4 +1,4 @@
-package Graphics;
+package graphics;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -10,8 +10,8 @@ import java.util.Collections;
 
 import javax.swing.JPanel;
 
-import Math.Coordinate3D;
-import Math.Vector3D;
+import math.Coordinate3D;
+import math.Vector3D;
 
 public class Engine3D extends JPanel {
 
@@ -74,9 +74,7 @@ public class Engine3D extends JPanel {
 				pos1.z );
 		Coordinate3D d = new Coordinate3D( pos1.x - deltaX, pos1.y - deltaY,
 				pos1.z );
-		System.out.println( deltaX + " " + deltaY );
 		this.addRect( a, b, c, d );
-
 	}
 
 	public boolean addTriangle( Coordinate3D pos0, Coordinate3D pos1,
