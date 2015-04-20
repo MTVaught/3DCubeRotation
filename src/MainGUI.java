@@ -24,6 +24,7 @@ public class MainGUI extends JFrame implements KeyListener {
 		this.setDefaultCloseOperation( JFrame.DISPOSE_ON_CLOSE );
 		this.setVisible( true );
 		window = new Engine3D( 640, 640, 640, enablePerspective );
+		window.enableAntiAlias( true );
 		this.add( window );
 		window.setBackground( Color.BLACK );
 		this.addKeyListener( this );
@@ -39,21 +40,21 @@ public class MainGUI extends JFrame implements KeyListener {
 		window.setColor( COLORS[0] );
 		window.addLine( new Coordinate3D( 0, 0, 0 ), new Coordinate3D( -200,
 				-200, 0 ), 1 );
-		// window.addTriangle( new Coordinate3D( 0, 0, 0 ), new Coordinate3D(
-		// -200, -200, 0 ), new Coordinate3D( -210, -200, 0 ) );
-		// window.addTriangle( new Coordinate3D( 0, 0, 0 ), new Coordinate3D(
-		// -10,
-		// 0, 0 ), new Coordinate3D( -210, -200, 0 ) );
 
 		window.setColor( COLORS[1] );
-		window.addRect( new Coordinate3D( 0, -50, 0 ), new Coordinate3D( 100,
+		window.addQuad( new Coordinate3D( 0, -50, 0 ), new Coordinate3D( 100,
 				-50, 0 ), new Coordinate3D( 100, 50, 0 ), new Coordinate3D( 0,
 				50, 0 ) );
 
 		window.setColor( COLORS[2] );
-		window.addRect( new Coordinate3D( -100, -50, 0 ), new Coordinate3D( 0,
+		window.addQuad( new Coordinate3D( -100, -50, 0 ), new Coordinate3D( 0,
 				-50, 100 ), new Coordinate3D( 0, 50, 100 ), new Coordinate3D(
 				-100, 50, 0 ) );
+
+		window.setColor( Color.GRAY );
+		window.addQuad( new Coordinate3D( -320, -320, 320 ), new Coordinate3D(
+				320, -320, 320 ), new Coordinate3D( 320, 320, 320 ),
+				new Coordinate3D( -320, 320, 320 ) );
 
 	}
 

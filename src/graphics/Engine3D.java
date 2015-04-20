@@ -33,6 +33,7 @@ public class Engine3D extends JPanel {
 	private ArrayList<Triangle>	triBin;
 	private Color				addColor;
 	private boolean				triDirty	= false;
+	private boolean				enableAntiAlias;
 
 	public Engine3D( int width, int height, int depth, boolean enablePerspective ) {
 		super();
@@ -56,6 +57,8 @@ public class Engine3D extends JPanel {
 		this.setPreferredSize( new Dimension( width, height ) );
 
 		addColor = Color.GRAY;
+
+		enableAntiAlias = false;
 	}
 
 	public void addLine( Coordinate3D pos0, Coordinate3D pos1, double thickness )
@@ -74,17 +77,19 @@ public class Engine3D extends JPanel {
 				pos1.z );
 		Coordinate3D d = new Coordinate3D( pos1.x - deltaX, pos1.y - deltaY,
 				pos1.z );
-		this.addRect( a, b, c, d );
+		this.addQuad( a, b, c, d );
 	}
 
 	public boolean addTriangle( Coordinate3D pos0, Coordinate3D pos1,
 			Coordinate3D pos2 ) {
 		triBin.add( new Triangle( pos0, pos1, pos2, addColor ) );
 		triDirty = true;
+		Collections.sort( triBin );
+
 		return true;
 	}
 
-	public void addRect( Coordinate3D pos0, Coordinate3D pos1, Coordinate3D pos2,
+	public void addQuad( Coordinate3D pos0, Coordinate3D pos1, Coordinate3D pos2,
  Coordinate3D pos3 ) throws Exception {
 
 		Vector3D ab = new Vector3D( pos0, pos1 );
@@ -99,11 +104,12 @@ public class Engine3D extends JPanel {
 
 		triBin.add( new Triangle( pos0, pos1, pos2, addColor ) );
 		triBin.add( new Triangle( pos2, pos3, pos0, addColor ) );
+		Collections.sort( triBin );
 
 		triDirty = true;
 	}
 
-	public boolean addPolygon( Coordinate3D[] pos ) {
+	private boolean addPolygon( Coordinate3D[] pos ) {
 		return false;
 	}
 
@@ -116,11 +122,7 @@ public class Engine3D extends JPanel {
 	}
 
 	public int getBinSize() {
-		return -1;
-	}
-
-	public int getBinSize( Bin bin ) {
-		return -1;
+		return triBin.size();
 	}
 
 	public void setZoom( double zoom ) {
@@ -131,12 +133,22 @@ public class Engine3D extends JPanel {
 		return this.zoom;
 	}
 
+	public void enableAntiAlias( boolean enableAA ) {
+		this.enableAntiAlias = enableAA;
+	}
+
 	@Override
 	public void paintComponent(Graphics g){
 		super.paintComponent(g);
-		RenderingHints rh = new RenderingHints(
+		RenderingHints rh;
+		if (enableAntiAlias) {
+			rh = new RenderingHints(
 				RenderingHints.KEY_ANTIALIASING,
 				RenderingHints.VALUE_ANTIALIAS_ON );
+		} else {
+			rh = new RenderingHints( RenderingHints.KEY_ANTIALIASING,
+					RenderingHints.VALUE_ANTIALIAS_OFF );
+		}
 		((Graphics2D) g).setRenderingHints(rh);
 
 		drawTriBin( g );
@@ -146,7 +158,7 @@ public class Engine3D extends JPanel {
 	private boolean drawTriBin( Graphics g ) {
 
 		if (triDirty) {
-			Collections.sort( triBin );
+			// Collections.sort( triBin );
 			triDirty = false;
 		}
 
