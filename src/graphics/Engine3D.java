@@ -96,7 +96,7 @@ public class Engine3D extends JPanel {
 		Vector3D ac = new Vector3D( pos0, pos2 );
 		Vector3D norm = Vector3D.crossProduct( ab, ac );
 		Vector3D ad = new Vector3D( pos0, pos3 );
-		double coplanar = Vector3D.dotProduct( norm, ad );
+		double coplanar = Math.abs( Vector3D.dotProduct( norm, ad ) );
 		if (!( coplanar < .000001 )) {
 			System.err.println( coplanar );
 			throw new Exception( "Rectangle is not co-planar. " );
@@ -109,8 +109,48 @@ public class Engine3D extends JPanel {
 		triDirty = true;
 	}
 
-	private boolean addPolygon( Coordinate3D[] pos ) {
-		return false;
+	public void addPolygon( Coordinate3D[] pos ) throws Exception {
+		switch ( pos.length ) {
+		case 0:
+		case 1:
+		case 2:
+			throw new Exception( "Invalid number of points for a polygon."
+					+ " There must be three or more points " );
+		case 3:
+			this.addTriangle( pos[0], pos[1], pos[2] );
+			break;
+		case 4:
+			this.addQuad( pos[0], pos[1], pos[2], pos[3] );
+			break;
+		default:
+			double x = 0,
+			y = 0,
+			z = 0;
+			for ( Coordinate3D coord : pos ) {
+				x += coord.x;
+				y += coord.y;
+				z += coord.z;
+			}
+			x /= pos.length;
+			y /= pos.length;
+			z /= pos.length;
+			Coordinate3D midPt = new Coordinate3D( x, y, z );
+			Vector3D midToA = new Vector3D( midPt, pos[0] );
+			Vector3D midToB = new Vector3D( midPt, pos[1] );
+			Vector3D crossABMid = Vector3D.crossProduct( midToA, midToB );
+			for ( int i = 2; i < pos.length; i++ ) {
+				double coplanar = Math.abs( Vector3D.dotProduct( crossABMid,
+						new Vector3D( midPt, pos[i] ) ) );
+				if (( coplanar < .000001 )) {
+					throw new Exception( "Polygon is not coplanar" );
+				}
+			}
+
+			for ( int i = 1; i < pos.length; i++ ) {
+				this.addTriangle( pos[i - 1], pos[i], midPt );
+			}
+			this.addTriangle( pos[pos.length - 1], pos[0], midPt );
+		}
 	}
 
 	public void setColor( Color color ) {
