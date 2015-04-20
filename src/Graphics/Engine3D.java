@@ -11,6 +11,7 @@ import java.util.Collections;
 import javax.swing.JPanel;
 
 import Math.Coordinate3D;
+import Math.Vector3D;
 
 public class Engine3D extends JPanel {
 
@@ -29,25 +30,16 @@ public class Engine3D extends JPanel {
 	private final double		D_OFFSET;
 	private final double		SCALE;
 	private double				zoom		= 0;
-	private ArrayList<Triangle>	lineBin;
 	private ArrayList<Triangle>	triBin;
-	private ArrayList<Triangle>	rectBin;
-	private ArrayList<Triangle>	polyBin;
 	private Color				addColor;
-	private boolean				lineDirty	= false;
 	private boolean				triDirty	= false;
-	private boolean				rectDirty	= false;
-	private boolean				polyDirty	= false;
 
 	public Engine3D( int width, int height, int depth, boolean enablePerspective ) {
 		super();
 
 		this.ENABLE_PERSPECTIVE = enablePerspective;
 
-		lineBin = new ArrayList<Triangle>();
 		triBin = new ArrayList<Triangle>();
-		rectBin = new ArrayList<Triangle>();
-		polyBin = new ArrayList<Triangle>();
 
 		V_OFFSET = height / 2.0;
 		H_OFFSET = width / 2.0;
@@ -66,8 +58,25 @@ public class Engine3D extends JPanel {
 		addColor = Color.GRAY;
 	}
 
-	public boolean addLine( Coordinate3D pos0, Coordinate3D pos1 ) {
-		return false;
+	public void addLine( Coordinate3D pos0, Coordinate3D pos1, double thickness )
+			throws Exception {
+		double slope = ( pos1.y - pos0.y ) / ( pos1.x - pos0.x );
+		double perpSlope = -1.0 / slope;
+		double halfDist = thickness / 2.0;
+		double deltaX = Math.sqrt( Math.pow( halfDist, 2.0 )
+				/ ( 1.0 + Math.pow( perpSlope, 2.0 ) ) );
+		double deltaY = perpSlope * deltaX;
+		Coordinate3D a = new Coordinate3D( pos0.x - deltaX, pos0.y - deltaY,
+				pos0.z );
+		Coordinate3D b = new Coordinate3D( pos0.x + deltaX, pos0.y + deltaY,
+				pos0.z );
+		Coordinate3D c = new Coordinate3D( pos1.x + deltaX, pos1.y + deltaY,
+				pos1.z );
+		Coordinate3D d = new Coordinate3D( pos1.x - deltaX, pos1.y - deltaY,
+				pos1.z );
+		System.out.println( deltaX + " " + deltaY );
+		this.addRect( a, b, c, d );
+
 	}
 
 	public boolean addTriangle( Coordinate3D pos0, Coordinate3D pos1,
@@ -78,11 +87,22 @@ public class Engine3D extends JPanel {
 	}
 
 	public void addRect( Coordinate3D pos0, Coordinate3D pos1, Coordinate3D pos2,
-			Coordinate3D pos3 ) {
-		// is it co-planer?
-		rectBin.add( new Triangle( pos0, pos1, pos2, addColor ) );
-		rectBin.add( new Triangle( pos2, pos3, pos0, addColor ) );
+ Coordinate3D pos3 ) throws Exception {
 
+		Vector3D ab = new Vector3D( pos0, pos1 );
+		Vector3D ac = new Vector3D( pos0, pos2 );
+		Vector3D norm = Vector3D.crossProduct( ab, ac );
+		Vector3D ad = new Vector3D( pos0, pos3 );
+		double coplanar = Vector3D.dotProduct( norm, ad );
+		if (!( coplanar < .000001 )) {
+			System.err.println( coplanar );
+			throw new Exception( "Rectangle is not co-planar. " );
+		}
+
+		triBin.add( new Triangle( pos0, pos1, pos2, addColor ) );
+		triBin.add( new Triangle( pos2, pos3, pos0, addColor ) );
+
+		triDirty = true;
 	}
 
 	public boolean addPolygon( Coordinate3D[] pos ) {
@@ -94,28 +114,7 @@ public class Engine3D extends JPanel {
 	}
 
 	public void clear() {
-		lineBin.clear();
 		triBin.clear();
-		rectBin.clear();
-		polyBin.clear();
-	}
-
-	public void clear( Bin bin ) throws Exception {
-		switch ( bin ) {
-		case LINE:
-			lineBin.clear();
-			break;
-		case RECTANGLE:
-			rectBin.clear();
-			break;
-		case POLYGON:
-			rectBin.clear();
-		case ALL:
-			this.clear();
-			break;
-		default:
-			throw new Exception( "Invalid Bin Identifier" );
-		}
 	}
 
 	public int getBinSize() {
@@ -142,52 +141,28 @@ public class Engine3D extends JPanel {
 				RenderingHints.VALUE_ANTIALIAS_ON );
 		((Graphics2D) g).setRenderingHints(rh);
 
-		//do stuff for lines
-
-		drawTriBin( g, Bin.TRIANGLE );
-		drawTriBin( g, Bin.RECTANGLE );
-		drawTriBin( g, Bin.POLYGON );
+		drawTriBin( g );
 
 	}
 
-	private boolean drawTriBin( Graphics g, Bin bin ) {
-		ArrayList<Triangle> geometry;
-		switch ( bin ) {
-		case LINE:
-			if (lineDirty)
-				Collections.sort( lineBin );
-			geometry = lineBin;
-			break;
-		case TRIANGLE:
-			if (triDirty)
-				Collections.sort( triBin );
-			geometry = triBin;
-			break;
-		case RECTANGLE:
-			if (rectDirty)
-				Collections.sort( rectBin );
-			geometry = rectBin;
-			break;
-		case POLYGON:
-			if (polyDirty)
-				Collections.sort( polyBin );
-			geometry = polyBin;
-			break;
-		default:
-			return false;
+	private boolean drawTriBin( Graphics g ) {
+
+		if (triDirty) {
+			Collections.sort( triBin );
+			triDirty = false;
 		}
 
-		for ( int i = 0; i < geometry.size(); i++ ) {
+		for ( int i = 0; i < triBin.size(); i++ ) {
 			int[] pt0 = new int[2];
 			int[] pt1 = new int[2];
 			int[] pt2 = new int[2];
-			Coordinate3D[] coords = geometry.get( i ).getPoints();
+			Coordinate3D[] coords = triBin.get( i ).getPoints();
 			pt0 = worldToScreen( coords[0] );
 			pt1 = worldToScreen( coords[1] );
 			pt2 = worldToScreen( coords[2] );
 			int[] x = { pt0[0], pt1[0], pt2[0] };
 			int[] y = { pt0[1], pt1[1], pt2[1] };
-			g.setColor( geometry.get( i ).getColor() );
+			g.setColor( triBin.get( i ).getColor() );
 			g.fillPolygon( x, y, 3 );
 		}
 		return true;

@@ -1,7 +1,7 @@
 
 public class Main {
 
-	public static void main(String[] args) {
+	public static void main( String[] args ) throws Exception {
 
 		System.out.println( " World" );
 
@@ -12,7 +12,7 @@ public class Main {
 		MainGUI withScale = new MainGUI( true );
 		withScale.setTitle( withScale.getTitle() + " (Perspective)" );
 		MainGUI withoutScale = new MainGUI( false );
-		withoutScale.setTitle( withoutScale.getTitle() + " (No Perpective)" );
+		withoutScale.setTitle( withoutScale.getTitle() + " (No Perspective)" );
 
 	}
 

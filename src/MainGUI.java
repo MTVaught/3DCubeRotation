@@ -8,12 +8,17 @@ import Graphics.Engine3D;
 import Math.Coordinate3D;
 
 public class MainGUI extends JFrame implements KeyListener {
+	/**
+	 *
+	 */
+	private static final long	serialVersionUID	= 1L;
+
 	public final Color	COLORS[]	= { Color.GREEN, Color.RED, Color.BLUE,
 			Color.YELLOW, Color.MAGENTA, Color.PINK, Color.CYAN };
 
 	private Engine3D	window;
 
-	public MainGUI( boolean enablePerspective ) {
+	public MainGUI( boolean enablePerspective ) throws Exception {
 		super( "Engine3D GUI" );
 		this.setDefaultCloseOperation( JFrame.DISPOSE_ON_CLOSE );
 		this.setVisible( true );
@@ -31,10 +36,24 @@ public class MainGUI extends JFrame implements KeyListener {
 				200, 200 ), new Coordinate3D( -100, 100, 300 ) );
 
 		window.setColor( COLORS[0] );
-		window.addTriangle( new Coordinate3D( 0, 0, 0 ), new Coordinate3D( -200,
-				-200, 0 ), new Coordinate3D( -210, -200, 0 ) );
-		window.addTriangle( new Coordinate3D( 0, 0, 0 ), new Coordinate3D( -10, 0,
-				0 ), new Coordinate3D( -210, -200, 0 ) );
+		window.addLine( new Coordinate3D( 0, 0, 0 ), new Coordinate3D( -200,
+				-200, 0 ), 1 );
+		// window.addTriangle( new Coordinate3D( 0, 0, 0 ), new Coordinate3D(
+		// -200, -200, 0 ), new Coordinate3D( -210, -200, 0 ) );
+		// window.addTriangle( new Coordinate3D( 0, 0, 0 ), new Coordinate3D(
+		// -10,
+		// 0, 0 ), new Coordinate3D( -210, -200, 0 ) );
+
+		window.setColor( COLORS[1] );
+		window.addRect( new Coordinate3D( 0, -50, 0 ), new Coordinate3D( 100,
+				-50, 0 ), new Coordinate3D( 100, 50, 0 ), new Coordinate3D( 0,
+				50, 0 ) );
+
+		window.setColor( COLORS[2] );
+		window.addRect( new Coordinate3D( -100, -50, 0 ), new Coordinate3D( 0,
+				-50, 100 ), new Coordinate3D( 0, 50, 100 ), new Coordinate3D(
+				-100, 50, 0 ) );
+
 	}
 
 	@Override
@@ -45,7 +64,6 @@ public class MainGUI extends JFrame implements KeyListener {
 
 	@Override
 	public void keyPressed( KeyEvent e ) {
-		// int key = e.getKeyCode();
 
 		boolean repaint = false;
 

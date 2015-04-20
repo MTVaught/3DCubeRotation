@@ -40,7 +40,7 @@ public class Vector3D {
 		double rtn = 0;
 		rtn += v0.x * v1.x;
 		rtn += v0.y * v1.y;
-		rtn += v0.z + v1.z;
+		rtn += v0.z * v1.z;
 
 		return rtn;
 	}
